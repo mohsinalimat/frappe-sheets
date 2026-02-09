@@ -20,14 +20,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        frappe_version: [version-15, develop]
+        frappe_version: [version-15, version-16, develop]
         include:
           - frappe_version: version-15
             python_version: '3.11'
             node_version: 18
+          - frappe_version: version-16
+            python_version: '3.14'
+            node_version: 24
           - frappe_version: develop
-            python_version: '3.12'
-            node_version: 22
+            python_version: '3.14'
+            node_version: 24
     name: Server (Frappe ${{ matrix.frappe_version }})
 
     services:
