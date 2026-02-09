@@ -265,8 +265,17 @@ class TestCreateDataImport(FrappeTestCase):
         )
         self._parent_doc_patcher.start()
 
+        # Enable allow_import for ToDo if not already set (required in Frappe v16+)
+        self._todo_allow_import = frappe.db.get_value("DocType", "ToDo", "allow_import")
+        if not self._todo_allow_import:
+            frappe.db.set_value("DocType", "ToDo", "allow_import", 1)
+            frappe.clear_cache(doctype="ToDo")
+
     def tearDown(self):
         self._parent_doc_patcher.stop()
+        if not self._todo_allow_import:
+            frappe.db.set_value("DocType", "ToDo", "allow_import", 0)
+            frappe.clear_cache(doctype="ToDo")
         super().tearDown()
 
     def _make_mapping(self):
@@ -336,8 +345,17 @@ class TestTriggerInsertWorksheetImport(FrappeTestCase):
         )
         self._parent_doc_patcher.start()
 
+        # Enable allow_import for ToDo if not already set (required in Frappe v16+)
+        self._todo_allow_import = frappe.db.get_value("DocType", "ToDo", "allow_import")
+        if not self._todo_allow_import:
+            frappe.db.set_value("DocType", "ToDo", "allow_import", 1)
+            frappe.clear_cache(doctype="ToDo")
+
     def tearDown(self):
         self._parent_doc_patcher.stop()
+        if not self._todo_allow_import:
+            frappe.db.set_value("DocType", "ToDo", "allow_import", 0)
+            frappe.clear_cache(doctype="ToDo")
         super().tearDown()
 
     def _make_mapping(self):
@@ -437,6 +455,7 @@ class TestWorksheetIdField(FrappeTestCase):
         mapping = DocTypeWorksheetMapping.__new__(DocTypeWorksheetMapping)
         mapping.mapped_doctype = mapped_doctype
         mapping.worksheet_id = 0
+        mapping.doctype = "DocType Worksheet Mapping"
 
         mock_parent = MagicMock()
         mock_worksheet = MagicMock()
